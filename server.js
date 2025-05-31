@@ -23,4 +23,28 @@ Queja: ${queja}
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  const mongoose = require("mongoose");
+
+mongoose.connect("TU_URL_DE_MONGODB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const quejaSchema = new mongoose.Schema({
+  institucion: String,
+  provincia: String,
+  mensaje: String,
+  fecha: { type: Date, default: Date.now },
+});
+
+const Queja = mongoose.model("Queja", quejaSchema);
+
+// Dentro del POST
+app.post("/queja", (req, res) => {
+  const nuevaQueja = new Queja(req.body);
+  nuevaQueja.save().then(() => {
+    res.send("Queja recibida");
+  });
+});
+
 });
